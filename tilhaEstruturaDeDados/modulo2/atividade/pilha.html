@@ -1,22 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    <script>    
-        let lista = null
+    <script>
+        class Stack {
+            constructor() {
+                this.items = []
+            }
 
+            push(element) {
+                this.items.push(element)
+            }
 
-        function add(value){
-            
-            
+            pop() {
+                return this.items.pop()
+            }
 
+            peek() {
+                return this.items[this.items.length - 1]
+            }
+
+            isEmpty() {
+                return this.items.length === 0
+            }
+
+            size() {
+                return this.items.length
+            }
         }
 
-</script>
-    
+        const stack = new Stack()
+
+        stack.push(10)
+        stack.push(20)
+        stack.push(30)
+
+        console.log(stack.peek()) // 30
+
+        stack.pop()
+
+        console.log(stack.peek()) // 20
+
+
+    </script>
+
 </body>
+
 </html>
