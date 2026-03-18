@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        let comparacoes = 0;
+        let trocas = 0;
+        function selectionSort(arr) {
+            const n = arr.length;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+
+                for (let j = i + 1; j < n; j++) {
+                    comparacoes++;
+                    if (arr[j] < arr[minIndex]) { minIndex = j; }
+                }
+
+                if (minIndex !== i) {
+                    trocas++;
+                    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+                }
+            }
+            return [arr]
+        }
+        const numbers = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+        console.log(selectionSort(numbers));
+        console.log(comparacoes)
+        console.log(trocas);
+        console.log("santanasdjubgkuibweguibwei")
+
+        function insertionSort(arr) {
+            const n = arr.length;
+
+            for (let i = 1; i < n; i++) {
+                const key = arr[i];
+                let j = i - 1;
+
+                while (j >= 0 && arr[j].toLowerCase() > key.toLowerCase()) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                }
+                arr[j + 1] = key;
+            }
+            return arr;
+        }
+        const numbers2= ["s","f","g","t","c"]
+        console.log(insertionSort(numbers2))
+
+    </script>
+
+    
+
+</body>
+
+</html>
