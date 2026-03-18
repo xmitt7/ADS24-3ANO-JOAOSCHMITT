@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <script>
-        function bubbleSort(arr){
+        let comparacoes = 0;
+        let trocas = 0;
+        function bubbleSort(arr) {
             const n = arr.length;
 
-            for(let i = 0; i< n - 1; i++){
-                for(let j = 0; j< n -i -1; j++){
-                    if(arr[j]> arr[j+1]){
-                        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+            for (let i = 0; i < n - 1; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    comparacoes++;
+
+                    if (arr[j] > arr[j + 1]) {
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                        trocas++;
                     }
                 }
             }
+
+        
             return arr;
         }
-
-        const numbers3 = [3,5,2,1,8];
-        console.log(bubbleSort(numbers3))
+        
+        const numbers100 = Array.from({length: 100}, () => Math.floor(Math.random() * 100));
+        console.log("Array original:", numbers100);
+        console.log(bubbleSort(numbers100))
+        console.log("Comparações:", comparacoes);
+        console.log("Trocas:", trocas);
+        
+        console.log("liga essa merda para saber onde ta vazando")
     </script>
-    
+
 </body>
+
 </html>
