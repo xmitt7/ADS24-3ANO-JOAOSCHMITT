@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class No {
+            constructor(valor) {
+                this.valor = valor
+                this.esquerda = null
+                this.direita = null
+                this.altura = 1
+            }
+        }
+        class AVL {
+
+            altura(no) {
+                if (no === null) return 0
+                return no.altura
+            }
+
+            fatorBalanceamento(no) {
+                if (no === null) return 0
+                return this.altura(no.esquerda) - this.altura(no.direita)
+            }
+            rotacaoDireita(y) {
+
+                let x = y.esquerda
+                let t2 = x.direita
+
+                x.direita = y
+                y.esquerda = t2
+
+                y.altura = Math.max(this.altura(y.esquerda), this.altura(y.direita)) + 1
+                x.altura = Math.max(this.altura(x.esquerda), this.altura(x.direita)) + 1
+
+                return x
+            }
+            rotacaoEsquerda(x) {
+
+                let y = x.direita
+                let t2 = y.esquerda
+
+                y.esquerda = x
+                x.direita = t2
+
+                x.altura = Math.max(this.altura(x.esquerda), this.altura(x.direita)) + 1
+                y.altura = Math.max(this.altura(y.esquerda), this.altura(y.direita)) + 1
+
+                return y
+            }
+            inserir(no, valor) {
+
+                if (no === null) return new No(valor)
+
+                if (valor < no.valor)
+                    no.esquerda = this.inserir(no.esquerda, valor)
+                else if (valor > no.valor)
+                    no.direita = this.inserir(no.direita, valor)
+                else
+                    return no
+
+                no.altura = 1 + Math.max(this.altura(no.esquerda), this.altura(no.direita))
+
+                let balance = this.fatorBalanceamento(no)
+
+                if (balance > 1 && valor < no.esquerda.valor)
+                    return this.rotacaoDireita(no)
+
+                if (balance < -1 && valor > no.direita.valor)
+                    return this.rotacaoEsquerda(no)
+
+                if (balance > 1 && valor > no.esquerda.valor) {
+                    no.esquerda = this.rotacaoEsquerda(no.esquerda)
+                    return this.rotacaoDireita(no)
+                }
+
+                if (balance < -1 && valor < no.direita.valor) {
+                    no.direita = this.rotacaoDireita(no.direita)
+                    return this.rotacaoEsquerda(no)
+                }
+
+                return no
+            }
+        }
+        const arvore = new AVL()
+
+        let raiz = null
+
+        raiz = arvore.inserir(raiz, 10)
+        raiz = arvore.inserir(raiz, 20)
+        raiz = arvore.inserir(raiz, 30)
+        raiz = arvore.inserir(raiz, 40)
+        raiz = arvore.inserir(raiz, 50)
+
+        console.log("AVL criada com sucesso")
+    </script>
+</body>
+
+</html>

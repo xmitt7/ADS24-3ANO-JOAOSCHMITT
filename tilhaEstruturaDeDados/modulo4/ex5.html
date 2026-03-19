@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function dijkstra(grafo, inicio) {
+
+            let distancias = {}
+            let visitado = {}
+
+            for (let vertice in grafo) {
+                distancias[vertice] = Infinity
+            }
+
+            distancias[inicio] = 0
+
+            while (true) {
+
+                let verticeMaisProximo = null
+                let menorDistancia = Infinity
+
+                for (let vertice in distancias) {
+                    if (!visitado[vertice] && distancias[vertice] < menorDistancia) {
+                        menorDistancia = distancias[vertice]
+                        verticeMaisProximo = vertice
+                    }
+                }
+
+                if (verticeMaisProximo === null) break
+
+                visitado[verticeMaisProximo] = true
+
+                for (let vizinho in grafo[verticeMaisProximo]) {
+
+                    let novaDistancia =
+                        distancias[verticeMaisProximo] +
+                        grafo[verticeMaisProximo][vizinho]
+
+                    if (novaDistancia < distancias[vizinho]) {
+                        distancias[vizinho] = novaDistancia
+                    }
+                }
+            }
+
+            return distancias
+        }
+        const grafo = {
+            A: { B: 4, C: 2 },
+            B: { A: 4, C: 1, D: 5 },
+            C: { A: 2, B: 1, D: 8 },
+            D: { B: 5, C: 8 }
+        }
+
+        console.log(dijkstra(grafo, "A"))
+        // menor caminho de um nó para todos os outro
+
+        // floyd-warshall
+        function floydWarshall(matriz) {
+
+            let dist = JSON.parse(JSON.stringify(matriz))
+            let n = dist.length
+
+            for (let k = 0; k < n; k++) {
+                for (let i = 0; i < n; i++) {
+                    for (let j = 0; j < n; j++) {
+
+                        if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                            dist[i][j] = dist[i][k] + dist[k][j]
+                        }
+
+                    }
+                }
+            }
+
+            return dist
+        }
+        const INF = Infinity
+
+        const grafo2 = [
+            [0, 3, INF, 5],
+            [2, 0, INF, 4],
+            [INF, 1, 0, INF],
+            [INF, INF, 2, 0]
+        ]
+
+        console.log(floydWarshall(grafo2))
+        // menor caminho entre todos os pares de nós
+    </script>
+</body>
+
+</html>

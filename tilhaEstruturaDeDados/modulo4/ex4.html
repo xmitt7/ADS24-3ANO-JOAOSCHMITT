@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Grafo {
+
+            constructor() {
+                this.lista = {}
+            }
+
+            adicionarVertice(v) {
+                if (!this.lista[v]) {
+                    this.lista[v] = []
+                }
+            }
+
+            adicionarAresta(v1, v2) {
+                this.lista[v1].push(v2)
+                this.lista[v2].push(v1)
+            }
+
+            dfs(inicio, visitado = {}) {
+
+                visitado[inicio] = true
+                console.log(inicio)
+
+                for (let vizinho of this.lista[inicio]) {
+                    if (!visitado[vizinho]) {
+                        this.dfs(vizinho, visitado)
+                    }
+                }
+            }
+
+            bfs(inicio) {
+
+                let fila = [inicio]
+                let visitado = {}
+
+                visitado[inicio] = true
+
+                while (fila.length > 0) {
+
+                    let atual = fila.shift()
+
+                    console.log(atual)
+
+                    for (let vizinho of this.lista[atual]) {
+                        if (!visitado[vizinho]) {
+                            visitado[vizinho] = true
+                            fila.push(vizinho)
+                        }
+                    }
+                }
+            }
+        }
+
+        const grafo = new Grafo()
+
+        grafo.adicionarVertice("A")
+        grafo.adicionarVertice("B")
+        grafo.adicionarVertice("C")
+        grafo.adicionarVertice("D")
+
+        grafo.adicionarAresta("A", "B")
+        grafo.adicionarAresta("A", "C")
+        grafo.adicionarAresta("B", "D")
+
+        console.log("DFS:")
+        grafo.dfs("A")
+
+        console.log("BFS:")
+        grafo.bfs("A")
+    </script>
+</body>
+
+</html>

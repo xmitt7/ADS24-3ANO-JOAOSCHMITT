@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script> 
+        // ======================================
+// 1. FILA (IMPRESSÃO)
+// ======================================
+class FilaImpressao {
+    constructor() {
+        this.fila = [];
+    }
+
+    adicionar(doc) {
+        this.fila.push(doc);
+        console.log("Documento adicionado:", doc);
+    }
+
+    imprimir() {
+        if (this.fila.length === 0) {
+            console.log("Fila vazia");
+            return;
+        }
+        const doc = this.fila.shift();
+        console.log("Imprimindo:", doc);
+    }
+}
+
+let impressora = new FilaImpressao();
+impressora.adicionar("doc1");
+impressora.adicionar("doc2");
+impressora.imprimir();
+
+
+// ======================================
+// PILHA (NAVEGADOR)
+// ======================================
+class Navegador {
+    constructor() {
+        this.voltarStack = [];
+        this.avancarStack = [];
+        this.atual = null;
+    }
+
+    visitar(pagina) {
+        if (this.atual) this.voltarStack.push(this.atual);
+        this.atual = pagina;
+        this.avancarStack = [];
+    }
+
+    voltar() {
+        if (this.voltarStack.length === 0) return;
+        this.avancarStack.push(this.atual);
+        this.atual = this.voltarStack.pop();
+    }
+
+    avancar() {
+        if (this.avancarStack.length === 0) return;
+        this.voltarStack.push(this.atual);
+        this.atual = this.avancarStack.pop();
+    }
+}
+
+let nav = new Navegador();
+nav.visitar("google");
+nav.visitar("youtube");
+nav.voltar();
+
+
+// ======================================
+// 2. CAIXEIRO VIAJANTE (FORÇA BRUTA)
+// ======================================
+function permutar(arr) {
+    if (arr.length <= 1) return [arr];
+
+    let res = [];
+    for (let i = 0; i < arr.length; i++) {
+        let resto = arr.slice(0, i).concat(arr.slice(i + 1));
+        let perms = permutar(resto);
+
+        for (let p of perms) {
+            res.push([arr[i], ...p]);
+        }
+    }
+    return res;
+}
+
+function tspForcaBruta(dist) {
+    let cidades = [...Array(dist.length).keys()];
+    let perms = permutar(cidades.slice(1));
+
+    let melhor = Infinity;
+
+    for (let p of perms) {
+        let caminho = [0, ...p, 0];
+        let custo = 0;
+
+        for (let i = 0; i < caminho.length - 1; i++) {
+            custo += dist[caminho[i]][caminho[i + 1]];
+        }
+
+        if (custo < melhor) melhor = custo;
+    }
+
+    return melhor;
+}
+
+// ======================================
+// VIZINHO MAIS PRÓXIMO
+// ======================================
+function tspVizinhoMaisProximo(dist) {
+    let n = dist.length;
+    let visitado = Array(n).fill(false);
+    let atual = 0;
+    visitado[atual] = true;
+
+    let custo = 0;
+
+    for (let i = 1; i < n; i++) {
+        let prox = -1;
+        let menor = Infinity;
+
+        for (let j = 0; j < n; j++) {
+            if (!visitado[j] && dist[atual][j] < menor) {
+                menor = dist[atual][j];
+                prox = j;
+            }
+        }
+
+        visitado[prox] = true;
+        custo += menor;
+        atual = prox;
+    }
+
+    return custo + dist[atual][0];
+}
+
+
+// ======================================
+// 3. BUSCA DE PADRÃO (FORÇA BRUTA)
+// ======================================
+function buscaBruta(texto, padrao) {
+    let n = texto.length;
+    let m = padrao.length;
+
+    for (let i = 0; i <= n - m; i++) {
+        let j = 0;
+
+        while (j < m && texto[i + j] === padrao[j]) {
+            j++;
+        }
+
+        if (j === m) return i;
+    }
+
+    return -1;
+}
+
+
+// ======================================
+// KMP
+// ======================================
+function calcularLPS(padrao) {
+    let lps = Array(padrao.length).fill(0);
+    let len = 0;
+    let i = 1;
+
+    while (i < padrao.length) {
+        if (padrao[i] === padrao[len]) {
+            lps[i++] = ++len;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i++] = 0;
+            }
+        }
+    }
+
+    return lps;
+}
+
+function kmp(texto, padrao) {
+    let lps = calcularLPS(padrao);
+    let i = 0, j = 0;
+
+    while (i < texto.length) {
+        if (texto[i] === padrao[j]) {
+            i++; j++;
+        }
+
+        if (j === padrao.length) {
+            return i - j;
+        } else if (i < texto.length && texto[i] !== padrao[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return -1;
+}
+
+
+// ======================================
+// 4. SISTEMA DE ARQUIVOS (SIMPLES)
+// ======================================
+class SistemaArquivos {
+    constructor() {
+        this.arquivos = {};
+    }
+
+    inserir(nome, conteudo) {
+        this.arquivos[nome] = conteudo;
+    }
+
+    buscar(nome) {
+        return this.arquivos[nome] || "Arquivo não encontrado";
+    }
+
+    remover(nome) {
+        delete this.arquivos[nome];
+    }
+}
+
+let fs = new SistemaArquivos();
+fs.inserir("file.txt", "conteudo");
+console.log(fs.buscar("file.txt"));
+
+
+// ======================================
+// 5. GRAFO + BFS
+// ======================================
+class Grafo {
+    constructor() {
+        this.lista = {};
+    }
+
+    adicionarVertice(v) {
+        if (!this.lista[v]) this.lista[v] = [];
+    }
+
+    adicionarAresta(v1, v2) {
+        this.lista[v1].push(v2);
+        this.lista[v2].push(v1);
+    }
+
+    bfs(inicio, alvo) {
+        let fila = [inicio];
+        let visitado = new Set([inicio]);
+        let distancia = { [inicio]: 0 };
+
+        while (fila.length > 0) {
+            let atual = fila.shift();
+
+            if (atual === alvo) {
+                return distancia[atual];
+            }
+
+            for (let vizinho of this.lista[atual]) {
+                if (!visitado.has(vizinho)) {
+                    visitado.add(vizinho);
+                    fila.push(vizinho);
+                    distancia[vizinho] = distancia[atual] + 1;
+                }
+            }
+        }
+
+        return -1;
+    }
+}
+
+// Teste
+let g = new Grafo();
+g.adicionarVertice("A");
+g.adicionarVertice("B");
+g.adicionarVertice("C");
+g.adicionarAresta("A", "B");
+g.adicionarAresta("B", "C");
+
+console.log("Distância A -> C:", g.bfs("A", "C"));
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Union-Find e Árvores</title>
+</head>
+
+<body>
+
+    <script>
+        // ======================================
+        // 1. UNION-FIND (Disjoint Set)
+        // ======================================
+
+        class UnionFind {
+            constructor(n) {
+                this.parent = Array(n).fill(0).map((_, i) => i);
+                this.rank = Array(n).fill(0);
+            }
+
+            find(x) {
+                if (this.parent[x] !== x) {
+                    this.parent[x] = this.find(this.parent[x]); // path compression
+                }
+                return this.parent[x];
+            }
+
+            union(x, y) {
+                let rootX = this.find(x);
+                let rootY = this.find(y);
+
+                if (rootX !== rootY) {
+                    // union by rank
+                    if (this.rank[rootX] < this.rank[rootY]) {
+                        this.parent[rootX] = rootY;
+                    } else if (this.rank[rootX] > this.rank[rootY]) {
+                        this.parent[rootY] = rootX;
+                    } else {
+                        this.parent[rootY] = rootX;
+                        this.rank[rootX]++;
+                    }
+                }
+            }
+        }
+
+        // Teste: componentes conectados
+        let uf = new UnionFind(5);
+        uf.union(0, 1);
+        uf.union(1, 2);
+        uf.union(3, 4);
+
+        console.log("0 e 2 conectados?", uf.find(0) === uf.find(2));
+        console.log("0 e 4 conectados?", uf.find(0) === uf.find(4));
+
+
+        // ======================================
+        // 2. KRUSKAL + DETECÇÃO DE CICLO
+        // ======================================
+
+        function kruskal(vertices, arestas) {
+            let uf = new UnionFind(vertices);
+            let resultado = [];
+
+            // ordenar arestas por peso
+            arestas.sort((a, b) => a.peso - b.peso);
+
+            for (let aresta of arestas) {
+                let { u, v, peso } = aresta;
+
+                if (uf.find(u) !== uf.find(v)) {
+                    uf.union(u, v);
+                    resultado.push(aresta);
+                }
+            }
+
+            return resultado;
+        }
+
+        // Teste
+        let arestas = [
+            { u: 0, v: 1, peso: 4 },
+            { u: 0, v: 2, peso: 3 },
+            { u: 1, v: 2, peso: 1 },
+            { u: 1, v: 3, peso: 2 },
+            { u: 2, v: 3, peso: 4 }
+        ];
+
+        console.log("MST (Kruskal):", kruskal(4, arestas));
+
+        // Detectar ciclo
+        function temCiclo(vertices, arestas) {
+            let uf = new UnionFind(vertices);
+
+            for (let { u, v } of arestas) {
+                if (uf.find(u) === uf.find(v)) {
+                    return true;
+                }
+                uf.union(u, v);
+            }
+
+            return false;
+        }
+
+        console.log("Tem ciclo?", temCiclo(4, arestas));
+
+
+        // ======================================
+        // 3. ÁRVORE B (SIMPLIFICADA)
+        // ======================================
+
+        class BTreeNode {
+            constructor(t, folha = true) {
+                this.t = t; // grau mínimo
+                this.chaves = [];
+                this.filhos = [];
+                this.folha = folha;
+            }
+        }
+
+        class BTree {
+            constructor(t) {
+                this.raiz = new BTreeNode(t);
+                this.t = t;
+            }
+
+            inserir(valor) {
+                this.raiz.chaves.push(valor);
+                this.raiz.chaves.sort((a, b) => a - b);
+                console.log("Árvore B:", this.raiz.chaves);
+            }
+        }
+
+        // Teste inserção
+        let btree = new BTree(3);
+        [10, 20, 5, 6, 12, 30, 7, 17].forEach(v => btree.inserir(v));
+
+        // ⚠️ (Implementação simplificada pra fins didáticos)
+
+
+        // ======================================
+        // 4. ÁRVORE B+ (SIMPLIFICADA)
+        // ======================================
+
+        class BPlusTree {
+            constructor() {
+                this.valores = [];
+            }
+
+            inserir(valor) {
+                this.valores.push(valor);
+                this.valores.sort((a, b) => a - b);
+                console.log("B+ Tree:", this.valores);
+            }
+        }
+
+        let bplus = new BPlusTree();
+        [15, 5, 25, 10, 20, 30, 35].forEach(v => bplus.inserir(v));
+
+
+        // ======================================
+        // 6. SIMULAÇÃO BANCO DE DADOS
+        // ======================================
+
+        class SimulacaoDB {
+            constructor() {
+                this.dados = [];
+            }
+
+            inserir(valor) {
+                this.dados.push(valor);
+                this.dados.sort((a, b) => a - b);
+            }
+
+            buscar(valor) {
+                return this.dados.includes(valor);
+            }
+        }
+
+        let db = new SimulacaoDB();
+        for (let i = 0; i < 1000; i++) {
+            db.inserir(i);
+        }
+
+        console.log("Buscar 500:", db.buscar(500));
+
+    </script>
+
+</body>
+
+</html>

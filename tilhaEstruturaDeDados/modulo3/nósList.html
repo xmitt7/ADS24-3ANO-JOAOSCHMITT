@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        // ============================
+        // 1. FATORIAL RECURSIVO
+        // ============================
+        function fatorial(n) {
+            if (n === 0 || n === 1) return 1;
+            return n * fatorial(n - 1);
+        }
+
+        console.log("Fatorial de 5:", fatorial(5));
+        // Complexidade: O(n)
+
+
+        // ============================
+        // 2. FIBONACCI RECURSIVO
+        // ============================
+        function fibonacci(n) {
+            if (n <= 1) return n;
+            return fibonacci(n - 1) + fibonacci(n - 2);
+        }
+
+        console.log("Fibonacci(6):", fibonacci(6));
+        // Complexidade: O(2^n) (ruim)
+
+        // 🔥 OTIMIZAÇÃO (memoization)
+        function fibonacciMemo(n, memo = {}) {
+            if (n in memo) return memo[n];
+            if (n <= 1) return n;
+
+            memo[n] = fibonacciMemo(n - 1, memo) + fibonacciMemo(n - 2, memo);
+            return memo[n];
+        }
+
+        console.log("Fibonacci otimizado:", fibonacciMemo(40));
+        // Complexidade: O(n)
+
+
+        // ============================
+        // 3. ÁRVORE BINÁRIA (TRAVESSIAS)
+        // ============================
+        class Node {
+            constructor(valor) {
+                this.valor = valor;
+                this.esq = null;
+                this.dir = null;
+            }
+        }
+
+        // IN-ORDER
+        function inOrder(no) {
+            if (no !== null) {
+                inOrder(no.esq);
+                console.log(no.valor);
+                inOrder(no.dir);
+            }
+        }
+
+        // PRE-ORDER
+        function preOrder(no) {
+            if (no !== null) {
+                console.log(no.valor);
+                preOrder(no.esq);
+                preOrder(no.dir);
+            }
+        }
+
+        // POST-ORDER
+        function postOrder(no) {
+            if (no !== null) {
+                postOrder(no.esq);
+                postOrder(no.dir);
+                console.log(no.valor);
+            }
+        }
+
+        // Criando árvore de exemplo
+        let raiz = new Node(10);
+        raiz.esq = new Node(5);
+        raiz.dir = new Node(15);
+
+        console.log("InOrder:");
+        inOrder(raiz);
+
+        console.log("PreOrder:");
+        preOrder(raiz);
+
+        console.log("PostOrder:");
+        postOrder(raiz);
+
+
+        // ============================
+        // 4. SOMA LISTA ENCADEADA
+        // ============================
+        class ListaNode {
+            constructor(valor) {
+                this.valor = valor;
+                this.prox = null;
+            }
+        }
+
+        function somaLista(no) {
+            if (no === null) return 0;
+            return no.valor + somaLista(no.prox);
+        }
+
+        // Criando lista: 1 -> 2 -> 3
+        let lista = new ListaNode(1);
+        lista.prox = new ListaNode(2);
+        lista.prox.prox = new ListaNode(3);
+
+        console.log("Soma da lista:", somaLista(lista));
+        // Complexidade: O(n)
+
+
+        // ============================
+        // 5. BUSCA EM ÁRVORE BST
+        // ============================
+        function buscarBST(no, valor) {
+            if (no === null) return false;
+
+            if (valor === no.valor) return true;
+
+            if (valor < no.valor) {
+                return buscarBST(no.esq, valor);
+            } else {
+                return buscarBST(no.dir, valor);
+            }
+        }
+
+        console.log("Buscar 15:", buscarBST(raiz, 15));
+
+        // Complexidade:
+        // Melhor: O(log n)
+        // Pior (árvore desbalanceada): O(n)
+
+
+        // ============================
+        // 6. TORRE DE HANÓI
+        // ============================
+        function hanoi(n, origem, destino, auxiliar) {
+            if (n === 1) {
+                console.log(`Mover disco de ${origem} para ${destino}`);
+                return;
+            }
+
+            hanoi(n - 1, origem, auxiliar, destino);
+            console.log(`Mover disco de ${origem} para ${destino}`);
+            hanoi(n - 1, auxiliar, destino, origem);
+        }
+
+        console.log("Torre de Hanói:");
+        hanoi(3, "A", "C", "B");
+
+        // Movimentos: 2^n - 1
+        // Complexidade: O(2^n)
+
+
+        // ============================
+        // 7. CONTAR NÓS LISTA
+        // ============================
+        function contarNos(no) {
+            if (no === null) return 0;
+            return 1 + contarNos(no.prox);
+        }
+
+        console.log("Quantidade de nós:", contarNos(lista));
+
+        // Complexidade:
+        // Tempo: O(n)
+        // Espaço: O(n) (pilha de recursão)
+
+    </script>
+</body>
+
+</html>

@@ -120,7 +120,177 @@
         const tempoQuickMediana = performance.now();
         quickSortMediana([...arrayOriginal]);
         console.log("Quick Sort (Mediana de 3):", (performance.now() - tempoQuickMediana).toFixed(4), "ms");
+
+        // ======================================
+        // HEAP SORT (NORMAL)
+        // ======================================
+        function heapSort(arr) {
+            let n = arr.length;
+
+            function heapify(arr, n, i) {
+                let maior = i;
+                let esq = 2 * i + 1;
+                let dir = 2 * i + 2;
+
+                if (esq < n && arr[esq] > arr[maior]) maior = esq;
+                if (dir < n && arr[dir] > arr[maior]) maior = dir;
+
+                if (maior !== i) {
+                    [arr[i], arr[maior]] = [arr[maior], arr[i]];
+                    heapify(arr, n, maior);
+                }
+            }
+
+            for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                heapify(arr, n, i);
+            }
+
+            for (let i = n - 1; i > 0; i--) {
+                [arr[0], arr[i]] = [arr[i], arr[0]];
+                heapify(arr, i, 0);
+            }
+
+            return arr;
+        }
+
+
+        // ======================================
+        // COMPARAÇÃO 100 / 1000 / 10000
+        // ======================================
+        function testarPerformance(tamanho) {
+            const arr = gerarArray(tamanho);
+
+            let t0 = performance.now();
+            mergeSort([...arr]);
+            let t1 = performance.now();
+
+            let t2 = performance.now();
+            quickSort([...arr]);
+            let t3 = performance.now();
+
+            let t4 = performance.now();
+            heapSort([...arr]);
+            let t5 = performance.now();
+
+            console.log(`\n=== TAMANHO ${tamanho} ===`);
+            console.log("Merge Sort:", (t1 - t0).toFixed(4), "ms");
+            console.log("Quick Sort:", (t3 - t2).toFixed(4), "ms");
+            console.log("Heap Sort:", (t5 - t4).toFixed(4), "ms");
+        }
+
+        testarPerformance(100);
+        testarPerformance(1000);
+        testarPerformance(10000);
+
+
+        // ======================================
+        // TESTE DE ESTABILIDADE
+        // ======================================
+
+        // Criando objetos com valor + posição original
+        function gerarArrayComRepetidos() {
+            return [
+                { valor: 5, id: "A" },
+                { valor: 3, id: "B" },
+                { valor: 5, id: "C" },
+                { valor: 3, id: "D" },
+            ];
+        }
+
+        // Merge Sort (ESTÁVEL)
+        function mergeSortObj(arr) {
+            if (arr.length <= 1) return arr;
+
+            const meio = Math.floor(arr.length / 2);
+            const esq = mergeSortObj(arr.slice(0, meio));
+            const dir = mergeSortObj(arr.slice(meio));
+
+            return mergeObj(esq, dir);
+        }
+
+        function mergeObj(esq, dir) {
+            let res = [];
+            let i = 0, j = 0;
+
+            while (i < esq.length && j < dir.length) {
+                if (esq[i].valor <= dir[j].valor) {
+                    res.push(esq[i++]); // mantém ordem
+                } else {
+                    res.push(dir[j++]);
+                }
+            }
+
+            return res.concat(esq.slice(i)).concat(dir.slice(j));
+        }
+
+        // Quick Sort (NÃO ESTÁVEL)
+        function quickSortObj(arr) {
+            if (arr.length <= 1) return arr;
+
+            const pivo = arr[arr.length - 1];
+            const menores = arr.slice(0, -1).filter(x => x.valor < pivo.valor);
+            const maiores = arr.slice(0, -1).filter(x => x.valor >= pivo.valor);
+
+            return [...quickSortObj(menores), pivo, ...quickSortObj(maiores)];
+        }
+
+        console.log("\n=== TESTE DE ESTABILIDADE ===");
+        let teste = gerarArrayComRepetidos();
+
+        console.log("Merge Sort:", mergeSortObj([...teste]));
+        console.log("Quick Sort:", quickSortObj([...teste]));
+
+
+        // ======================================
+        // HEAP SORT ESTÁVEL
+        // ======================================
+        function heapSortEstavel(arr) {
+            // adiciona índice original
+            let novo = arr.map((v, i) => ({ valor: v, index: i }));
+
+            novo.sort((a, b) => {
+                if (a.valor === b.valor) return a.index - b.index;
+                return a.valor - b.valor;
+            });
+
+            return novo.map(x => x.valor);
+        }
+
+        console.log("\nHeap Sort Estável:", heapSortEstavel([5, 3, 5, 3]));
+
+
+        // ======================================
+        // SELECTION SORT ESTÁVEL
+        // ======================================
+        function selectionSortEstavel(arr) {
+            let n = arr.length;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+
+                for (let j = i + 1; j < n; j++) {
+                    if (arr[j] < arr[minIndex]) {
+                        minIndex = j;
+                    }
+                }
+
+                let chave = arr[minIndex];
+
+                // desloca ao invés de trocar
+                while (minIndex > i) {
+                    arr[minIndex] = arr[minIndex - 1];
+                    minIndex--;
+                }
+
+                arr[i] = chave;
+            }
+
+            return arr;
+        }
+
+        console.log("\nSelection Sort Estável:", selectionSortEstavel([5, 3, 5, 3]));
     </script>
+
 </body>
 
 </html>

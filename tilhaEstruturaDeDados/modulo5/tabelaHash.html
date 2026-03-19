@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tabelas Hash</title>
+</head>
+
+<body>
+
+    <script>
+        // ======================================
+        // 1. FUNÇÕES DE HASH
+        // ======================================
+
+        // Inteiros
+        function hashInt(chave, tamanho = 10) {
+            return chave % tamanho;
+        }
+
+        console.log("Hash int (25):", hashInt(25));
+
+        // Strings (ASCII)
+        function hashString(str, tamanho = 10) {
+            let soma = 0;
+            for (let i = 0; i < str.length; i++) {
+                soma += str.charCodeAt(i);
+            }
+            return soma % tamanho;
+        }
+
+        console.log("Hash string:", hashString("abc"));
+
+
+        // ======================================
+        // 2. HASH COM ENCADEAMENTO
+        // ======================================
+
+        class HashEncadeamento {
+            constructor(tamanho = 10) {
+                this.tabela = new Array(tamanho).fill(null).map(() => []);
+                this.tamanho = tamanho;
+            }
+
+            hash(chave) {
+                return hashString(chave, this.tamanho);
+            }
+
+            inserir(chave, valor) {
+                let index = this.hash(chave);
+                this.tabela[index].push({ chave, valor });
+            }
+
+            buscar(chave) {
+                let index = this.hash(chave);
+                return this.tabela[index].find(item => item.chave === chave);
+            }
+
+            remover(chave) {
+                let index = this.hash(chave);
+                this.tabela[index] = this.tabela[index].filter(item => item.chave !== chave);
+            }
+        }
+
+        let hash1 = new HashEncadeamento();
+        hash1.inserir("nome", "João");
+        hash1.inserir("idade", 20);
+
+        console.log("Buscar nome:", hash1.buscar("nome"));
+
+
+        // ======================================
+        // 3. HASH COM PROBING LINEAR
+        // ======================================
+
+        class HashLinear {
+            constructor(tamanho = 10) {
+                this.tabela = new Array(tamanho).fill(null);
+                this.tamanho = tamanho;
+            }
+
+            hash(chave) {
+                return hashString(chave, this.tamanho);
+            }
+
+            inserir(chave, valor) {
+                let index = this.hash(chave);
+
+                while (this.tabela[index] !== null) {
+                    index = (index + 1) % this.tamanho;
+                }
+
+                this.tabela[index] = { chave, valor };
+            }
+
+            buscar(chave) {
+                let index = this.hash(chave);
+
+                while (this.tabela[index] !== null) {
+                    if (this.tabela[index].chave === chave) {
+                        return this.tabela[index];
+                    }
+                    index = (index + 1) % this.tamanho;
+                }
+
+                return null;
+            }
+
+            remover(chave) {
+                let index = this.hash(chave);
+
+                while (this.tabela[index] !== null) {
+                    if (this.tabela[index].chave === chave) {
+                        this.tabela[index] = null;
+                        return;
+                    }
+                    index = (index + 1) % this.tamanho;
+                }
+            }
+        }
+
+        let hash2 = new HashLinear();
+        hash2.inserir("a", 1);
+        hash2.inserir("b", 2);
+
+        console.log("Buscar a:", hash2.buscar("a"));
+
+
+        // ======================================
+        // 4. COMPARAÇÃO (SIMPLES)
+        // ======================================
+
+        function testeComparacao() {
+            let enc = new HashEncadeamento(1000);
+            let lin = new HashLinear(1000);
+
+            let dados = [];
+            for (let i = 0; i < 1000; i++) {
+                dados.push("chave" + i);
+            }
+
+            console.time("Encadeamento Inserir");
+            dados.forEach((k, i) => enc.inserir(k, i));
+            console.timeEnd("Encadeamento Inserir");
+
+            console.time("Linear Inserir");
+            dados.forEach((k, i) => lin.inserir(k, i));
+            console.timeEnd("Linear Inserir");
+
+            console.time("Encadeamento Buscar");
+            dados.forEach(k => enc.buscar(k));
+            console.timeEnd("Encadeamento Buscar");
+
+            console.time("Linear Buscar");
+            dados.forEach(k => lin.buscar(k));
+            console.timeEnd("Linear Buscar");
+        }
+
+        testeComparacao();
+
+        // ✔ Geral:
+        // Encadeamento → melhor quando tem muitas colisões
+        // Linear → melhor em tabelas pouco cheias (< 75%)
+
+
+        // ======================================
+        // 5. DICIONÁRIO COM HASH
+        // ======================================
+
+        class Dicionario {
+            constructor() {
+                this.hash = new HashEncadeamento(50);
+            }
+
+            adicionar(palavra, significado) {
+                this.hash.inserir(palavra, significado);
+            }
+
+            buscar(palavra) {
+                let res = this.hash.buscar(palavra);
+                return res ? res.valor : "Palavra não encontrada";
+            }
+
+            remover(palavra) {
+                this.hash.remover(palavra);
+            }
+        }
+
+        let dic = new Dicionario();
+        dic.adicionar("js", "linguagem de programação");
+
+        console.log(dic.buscar("js"));
+        console.log(dic.buscar("python"));
+
+
+        // ======================================
+        // 6. ANÁLISE DE DESEMPENHO
+        // ======================================
+
+        function testeTamanho(tamanho) {
+            let hash = new HashEncadeamento(tamanho);
+
+            let dados = [];
+            for (let i = 0; i < 500; i++) {
+                dados.push("key" + i);
+            }
+
+            dados.forEach((k, i) => hash.inserir(k, i));
+
+            console.time("Busca tamanho " + tamanho);
+            dados.forEach(k => hash.buscar(k));
+            console.timeEnd("Busca tamanho " + tamanho);
+        }
+
+        testeTamanho(50);
+        testeTamanho(100);
+        testeTamanho(250);
+
+        // ✔ Quanto maior a tabela → menos colisões → mais rápido
+
+
+        // ======================================
+        // 7. HASH PERSONALIZADA
+        // ======================================
+
+        function hashMelhor(str, tamanho = 100) {
+            let hash = 0;
+            let primo = 31;
+
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash * primo + str.charCodeAt(i)) % tamanho;
+            }
+
+            return hash;
+        }
+
+        // Teste distribuição
+        function testarDistribuicao() {
+            let mapa = new Array(100).fill(0);
+
+            for (let i = 0; i < 1000; i++) {
+                let index = hashMelhor("chave" + i);
+                mapa[index]++;
+            }
+
+            console.log("Distribuição:", mapa);
+        }
+
+        testarDistribuicao();
+
+        // ✔ Melhor distribuição que soma ASCII
+        // ✔ Menos colisões
+
+    </script>
+
+</body>
+
+</html>

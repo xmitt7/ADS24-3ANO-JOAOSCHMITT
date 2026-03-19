@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // arvore binaria de exemplo
+        class No {
+            constructor(valor) {
+                this.valor = valor
+                this.esquerda = null
+                this.direita = null
+            }
+        }
+        function inOrder(no) {
+            if (no !== null) {
+                inOrder(no.esquerda)
+                console.log(no.valor)
+                inOrder(no.direita)
+            }
+        }
+        function preOrder(no) {
+            if (no !== null) {
+                console.log(no.valor)
+                preOrder(no.esquerda)
+                preOrder(no.direita)
+            }
+        }
+        function postOrder(no) {
+            if (no !== null) {
+                postOrder(no.esquerda)
+                postOrder(no.direita)
+                console.log(no.valor)
+            }
+        }
+
+        let raiz = new No(1)
+
+        raiz.esquerda = new No(2)
+        raiz.direita = new No(3)
+
+        raiz.esquerda.esquerda = new No(4)
+        raiz.esquerda.direita = new No(5)
+
+        console.log("InOrder:")
+        inOrder(raiz)
+
+        console.log("PreOrder:")
+        preOrder(raiz)
+
+        console.log("PostOrder:")
+        postOrder(raiz)
+
+        // arvore binaria de busca
+        class No {
+            constructor(valor) {
+                this.valor = valor
+                this.esquerda = null
+                this.direita = null
+            }
+        }
+        class ArvoreBST {
+
+            constructor() {
+                this.raiz = null
+            }
+
+            inserir(valor) {
+                const novoNo = new No(valor)
+
+                if (this.raiz === null) {
+                    this.raiz = novoNo
+                    return
+                }
+
+                this.inserirNo(this.raiz, novoNo)
+            }
+
+            inserirNo(no, novoNo) {
+                if (novoNo.valor < no.valor) {
+                    if (no.esquerda === null) {
+                        no.esquerda = novoNo
+                    } else {
+                        this.inserirNo(no.esquerda, novoNo)
+                    }
+                } else {
+                    if (no.direita === null) {
+                        no.direita = novoNo
+                    } else {
+                        this.inserirNo(no.direita, novoNo)
+                    }
+                }
+            }
+
+            buscar(no, valor) {
+                if (no === null) {
+                    return false
+                }
+
+                if (valor === no.valor) {
+                    return true
+                }
+
+                if (valor < no.valor) {
+                    return this.buscar(no.esquerda, valor)
+                } else {
+                    return this.buscar(no.direita, valor)
+                }
+            }
+            remover(no, valor) {
+
+                if (no === null) {
+                    return null
+                }
+
+                if (valor < no.valor) {
+                    no.esquerda = this.remover(no.esquerda, valor)
+                    return no
+                }
+
+                if (valor > no.valor) {
+                    no.direita = this.remover(no.direita, valor)
+                    return no
+                }
+
+                if (no.esquerda === null && no.direita === null) {
+                    return null
+                }
+
+                if (no.esquerda === null) {
+                    return no.direita
+                }
+
+                if (no.direita === null) {
+                    return no.esquerda
+                }
+
+                let aux = this.minimo(no.direita)
+                no.valor = aux.valor
+                no.direita = this.remover(no.direita, aux.valor)
+
+                return no
+            }
+            minimo(no) {
+                while (no.esquerda !== null) {
+                    no = no.esquerda
+                }
+                return no
+            }
+        }
+
+        const arvore = new ArvoreBST()
+
+        arvore.inserir(50)
+        arvore.inserir(30)
+        arvore.inserir(70)
+        arvore.inserir(20)
+        arvore.inserir(40)
+        arvore.inserir(60)
+        arvore.inserir(80)
+
+        console.log("Buscar 40:", arvore.buscar(arvore.raiz, 40))
+
+        arvore.raiz = arvore.remover(arvore.raiz, 30)
+
+        console.log("Buscar 30:", arvore.buscar(arvore.raiz, 30))
+    </script>
+</body>
+
+</html>
