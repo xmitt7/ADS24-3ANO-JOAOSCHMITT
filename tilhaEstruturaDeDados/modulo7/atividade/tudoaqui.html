@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmos de Ordenação</title>
+</head>
+
+<body>
+    <script>
+        // ===== SELECTION SORT =====
+        let comparacoes = 0;
+        let trocas = 0;
+
+        function selectionSort(arr) {
+            const n = arr.length;
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+                for (let j = i + 1; j < n; j++) {
+                    comparacoes++;
+                    if (arr[j] < arr[minIndex]) minIndex = j;
+                }
+                if (minIndex !== i) {
+                    trocas++;
+                    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+                }
+            }
+            return arr;
+        }
+
+        console.log("=== SELECTION SORT ===");
+        const numbers = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+        console.log("Ordenado:", selectionSort(numbers));
+        console.log("Comparações:", comparacoes);
+        console.log("Trocas:", trocas);
+
+        // ===== INSERTION SORT =====
+        let comparacoes2 = 0;
+        let trocas2 = 0;
+
+        function insertionSort(arr) {
+            const n = arr.length;
+            for (let i = 1; i < n; i++) {
+                const key = arr[i];
+                let j = i - 1;
+                while (j >= 0 && arr[j] > key) {
+                    comparacoes2++;
+                    arr[j + 1] = arr[j];
+                    trocas2++;
+                    j--;
+                }
+                arr[j + 1] = key;
+            }
+            return arr;
+        }
+
+        console.log("\n=== INSERTION SORT ===");
+        const numbers2 = [1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        console.log("Ordenado:", insertionSort(numbers2));
+        console.log("Comparações:", comparacoes2);
+        console.log("Trocas:", trocas2);
+        console.log("Diferença de comparações:", comparacoes - comparacoes2);
+        console.log("Diferença de trocas:", trocas - trocas2);
+
+        // ===== ALGORITMOS AVANÇADOS =====
+        function gerarArray(tamanho) {
+            return Array.from({ length: tamanho }, () => Math.floor(Math.random() * 1000));
+        }
+
+        function mergeSort(arr) {
+            if (arr.length <= 1) return arr;
+            const meio = Math.floor(arr.length / 2);
+            const esquerda = mergeSort(arr.slice(0, meio));
+            const direita = mergeSort(arr.slice(meio));
+            return merge(esquerda, direita);
+        }
+
+        function merge(esq, dir) {
+            let resultado = [];
+            let i = 0, j = 0;
+            while (i < esq.length && j < dir.length) {
+                resultado.push(esq[i] < dir[j] ? esq[i++] : dir[j++]);
+            }
+            return resultado.concat(esq.slice(i)).concat(dir.slice(j));
+        }
+
+        function quickSort(arr) {
+            if (arr.length <= 1) return arr;
+            const pivo = arr[arr.length - 1];
+            const menores = arr.slice(0, -1).filter(x => x < pivo);
+            const maiores = arr.slice(0, -1).filter(x => x >= pivo);
+            return [...quickSort(menores), pivo, ...quickSort(maiores)];
+        }
+
+        function quickSortMediana(arr) {
+            if (arr.length <= 1) return arr;
+            const primeiro = arr[0];
+            const meio = arr[Math.floor(arr.length / 2)];
+            const ultimo = arr[arr.length - 1];
+            const pivo = [primeiro, meio, ultimo].sort((a, b) => a - b)[1];
+            const menores = arr.filter(x => x < pivo);
+            const iguais = arr.filter(x => x === pivo);
+            const maiores = arr.filter(x => x > pivo);
+            return [...quickSortMediana(menores), ...iguais, ...quickSortMediana(maiores)];
+        }
+
+        // ===== TESTES =====
+        console.log("\n=== COMPARAÇÃO DE PERFORMANCE (50 elementos) ===");
+        const arrayOriginal = gerarArray(50);
+
+        const tempoMerge = performance.now();
+        mergeSort([...arrayOriginal]);
+        console.log("Merge Sort:", (performance.now() - tempoMerge).toFixed(4), "ms");
+
+        const tempoQuick = performance.now();
+        quickSort([...arrayOriginal]);
+        console.log("Quick Sort:", (performance.now() - tempoQuick).toFixed(4), "ms");
+
+        const tempoQuickMediana = performance.now();
+        quickSortMediana([...arrayOriginal]);
+        console.log("Quick Sort (Mediana de 3):", (performance.now() - tempoQuickMediana).toFixed(4), "ms");
+    </script>
+</body>
+
+</html>
