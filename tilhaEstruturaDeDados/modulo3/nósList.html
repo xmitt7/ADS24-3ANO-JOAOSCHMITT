@@ -19,7 +19,6 @@
         }
 
         console.log("Fatorial de 5:", fatorial(5));
-        // Complexidade: O(n)
 
 
         // ============================
@@ -31,7 +30,6 @@
         }
 
         console.log("Fibonacci(6):", fibonacci(6));
-        // Complexidade: O(2^n) (ruim)
 
         // 🔥 OTIMIZAÇÃO (memoization)
         function fibonacciMemo(n, memo = {}) {
@@ -43,7 +41,6 @@
         }
 
         console.log("Fibonacci otimizado:", fibonacciMemo(40));
-        // Complexidade: O(n)
 
 
         // ============================
@@ -120,9 +117,6 @@
         lista.prox.prox = new ListaNode(3);
 
         console.log("Soma da lista:", somaLista(lista));
-        // Complexidade: O(n)
-
-
         // ============================
         // 5. BUSCA EM ÁRVORE BST
         // ============================
@@ -139,12 +133,6 @@
         }
 
         console.log("Buscar 15:", buscarBST(raiz, 15));
-
-        // Complexidade:
-        // Melhor: O(log n)
-        // Pior (árvore desbalanceada): O(n)
-
-
         // ============================
         // 6. TORRE DE HANÓI
         // ============================
@@ -161,11 +149,6 @@
 
         console.log("Torre de Hanói:");
         hanoi(3, "A", "C", "B");
-
-        // Movimentos: 2^n - 1
-        // Complexidade: O(2^n)
-
-
         // ============================
         // 7. CONTAR NÓS LISTA
         // ============================
@@ -175,10 +158,6 @@
         }
 
         console.log("Quantidade de nós:", contarNos(lista));
-
-        // Complexidade:
-        // Tempo: O(n)
-        // Espaço: O(n) (pilha de recursão)
 
     </script>
 </body>

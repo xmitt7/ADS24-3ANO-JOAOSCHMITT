@@ -31,7 +31,6 @@
                 let rootY = this.find(y);
 
                 if (rootX !== rootY) {
-                    // union by rank
                     if (this.rank[rootX] < this.rank[rootY]) {
                         this.parent[rootX] = rootY;
                     } else if (this.rank[rootX] > this.rank[rootY]) {
@@ -44,7 +43,6 @@
             }
         }
 
-        // Teste: componentes conectados
         let uf = new UnionFind(5);
         uf.union(0, 1);
         uf.union(1, 2);
@@ -62,7 +60,6 @@
             let uf = new UnionFind(vertices);
             let resultado = [];
 
-            // ordenar arestas por peso
             arestas.sort((a, b) => a.peso - b.peso);
 
             for (let aresta of arestas) {
@@ -135,9 +132,6 @@
         let btree = new BTree(3);
         [10, 20, 5, 6, 12, 30, 7, 17].forEach(v => btree.inserir(v));
 
-        // ⚠️ (Implementação simplificada pra fins didáticos)
-
-
         // ======================================
         // 4. ÁRVORE B+ (SIMPLIFICADA)
         // ======================================
@@ -156,7 +150,6 @@
 
         let bplus = new BPlusTree();
         [15, 5, 25, 10, 20, 30, 35].forEach(v => bplus.inserir(v));
-
 
         // ======================================
         // 6. SIMULAÇÃO BANCO DE DADOS

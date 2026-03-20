@@ -186,8 +186,6 @@
         // ======================================
         // TESTE DE ESTABILIDADE
         // ======================================
-
-        // Criando objetos com valor + posição original
         function gerarArrayComRepetidos() {
             return [
                 { valor: 5, id: "A" },
@@ -276,7 +274,6 @@
 
                 let chave = arr[minIndex];
 
-                // desloca ao invés de trocar
                 while (minIndex > i) {
                     arr[minIndex] = arr[minIndex - 1];
                     minIndex--;
