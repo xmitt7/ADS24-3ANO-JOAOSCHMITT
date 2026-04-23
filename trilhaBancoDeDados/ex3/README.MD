@@ -2,11 +2,8 @@
  Banco de dados: `banco_dados`
 --
 
--- --------------------------------------------------------
-
---
+-- ------------------------------------------------------
 -- Estrutura para tabela `funcionarios`
---
 
 CREATE TABLE `funcionarios` (
   `id` int NOT NULL,

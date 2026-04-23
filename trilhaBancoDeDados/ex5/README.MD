@@ -1,4 +1,4 @@
-parte pratica 
+
 -- Banco de dados: `banco_de_dados`
 --
 
@@ -50,7 +50,8 @@ CREATE TABLE `pedidos` (
 INSERT INTO `pedidos` (`id_pedido`, `id_cliente`, `valor_total`) VALUES
 (4, 3, 100.00),
 (5, 3, 200.00),
-(6, 2, 150.00);
+(6, 2, 150.00),
+(7, 3, 999.99);
 
 -- --------------------------------------------------------
 
@@ -170,7 +171,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `perfil`
@@ -208,42 +209,57 @@ ALTER TABLE `perfil`
   ADD CONSTRAINT `perfil_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`);
 COMMIT;
 
+COMANDOS 
+
+SELECT clientes.nome, pedidos.valor_total FROM clientes INNER JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente;
+SELECT clientes.nome, pedidos.valor_total FROM clientes LEFT JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente;
+SELECT clientes.nome, pedidos.valor_total FROM clientes RIGHT JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente;
+SELECT clientes.nome, pedidos.valor_total FROM clientes LEFT JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente UNION SELECT clientes.nome, pedidos.valor_total FROM clientes RIGHT JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente;
+SELECT nome FROM clientes WHERE id_cliente = ( SELECT id_cliente FROM pedidos WHERE valor_total = ( SELECT MAX(valor_total) FROM pedidos ) );
+SELECT * FROM `pedidos`
+SELECT * FROM `clientes`
+SELECT * FROM `pedidos`
+SELECT * FROM `pedido_produto`
+SELECT * FROM `pedidos`
+SELECT * FROM `clientes`
+SELECT clientes.nome FROM clientes JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente WHERE pedidos.valor_total = ( SELECT MAX(valor_total) FROM pedidos );
+INSERT INTO pedidos (id_cliente, valor_total) SELECT clientes.id_cliente, 999.99 FROM clientes JOIN ( SELECT id_cliente FROM pedidos ORDER BY valor_total DESC LIMIT 1 ) AS maior_pedido ON clientes.id_cliente = maior_pedido.id_cliente;
+SELECT * FROM `pedidos`
+SELECT clientes.nome, ( SELECT SUM(pedidos.valor_total) FROM pedidos WHERE pedidos.id_cliente = clientes.id_cliente ) AS total_pedidos FROM clientes;
+SELECT COUNT(*) AS total_pedidos FROM pedidos;
+SELECT clientes.nome, SUM(pedidos.valor_total) AS total_vendido FROM clientes JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente GROUP BY clientes.nome;
+SELECT clientes.nome, SUM(pedidos.valor_total) AS total_vendido FROM clientes JOIN pedidos ON clientes.id_cliente = pedidos.id_cliente GROUP BY clientes.nome HAVING SUM(pedidos.valor_total) > 200;
 
 
-
-
-parte teorica 
+parte teorica
 
 Resposta 1:
-Relacionamento entre tabelas é a ligação entre dados usando chaves. A chave primária identifica o registro e a estrangeira faz a ligação com outra tabela.
+INNER JOIN retorna apenas os registros que possuem correspondência nas duas tabelas. Exemplo: listar clientes que possuem pedidos.
 
 Resposta 2:
-Chave primária é única, não pode ser nula e identifica cada registro. Ela é essencial porque garante que não existam dados duplicados.
+LEFT JOIN traz todos os registros da tabela da esquerda e os relacionados da direita. RIGHT JOIN faz o contrário. Exemplo: LEFT mostra todos clientes mesmo sem pedido, RIGHT mostra todos pedidos mesmo sem cliente.
 
 Resposta 3:
-Chave estrangeira é um campo que referencia outra tabela. Ela é importante para conectar dados e manter organização.
+O FULL OUTER JOIN é feito usando UNION entre LEFT JOIN e RIGHT JOIN. Ele não é nativo no MySQL porque o banco não implementa diretamente esse tipo de junção.
 
 Resposta 4:
-Integridade referencial garante que os dados estejam corretos entre tabelas. Exemplo: não permitir um pedido com cliente que não existe.
+Subconsulta simples é uma consulta dentro de outra. Exemplo: buscar o cliente com maior pedido usando SELECT dentro de outro SELECT.
 
 Resposta 5:
-1:1 → um registro se relaciona com outro (ex: usuário e perfil)
-1:N → um para vários (ex: cliente e pedidos)
-N:M → muitos para muitos (ex: pedidos e produtos)
+Subconsulta simples roda independente. A correlacionada depende da consulta externa e executa para cada linha.
 
 Resposta 6:
-ON DELETE CASCADE apaga registros relacionados automaticamente.
-ON UPDATE CASCADE atualiza automaticamente quando o valor muda.
+Funções de agregação fazem cálculos em vários dados. As mais usadas são COUNT, SUM, AVG, MAX e MIN.
 
 Resposta 7:
-Tabela intermediária serve para relacionamento N:M. Ela guarda as chaves das duas tabelas e outras informações como quantidade.
+GROUP BY agrupa dados iguais. É usado quando queremos fazer cálculos por grupo, como total por cliente.
 
 Resposta 8:
-Relacionamentos ajudam a organizar os dados, evitar repetição e manter consistência.
+HAVING filtra dados depois do GROUP BY. WHERE filtra antes.
 
 Resposta 9:
-Sem relacionamentos pode ter dados duplicados, inconsistentes e erros como pedidos sem cliente.
+Exemplo 1: total de vendas por cliente
+Exemplo 2: quantidade de pedidos por produto
 
 Resposta 10:
-1:N é usado em sistemas como cliente e pedidos.
-N:M é usado em e-commerce, como pedidos e produtos.
+JOINs servem para relacionar tabelas. Eles evitam repetição de dados e deixam o banco mais organizado e eficiente
